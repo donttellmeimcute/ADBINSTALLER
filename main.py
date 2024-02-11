@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog
 import subprocess
+import os
 
 def select_files():
     files = filedialog.askopenfilenames(filetypes=[("APK Files", "*.apk")])
@@ -16,7 +17,12 @@ def install_files():
 def enable_wireless_debugging():
     ip_address = ip_entry.get()
     code = code_entry.get()
-    subprocess.run(["adb", "tcpip", "5555"])
+    port = port_entry.get()
+    
+    # Establecer el puerto como una variable de entorno
+    os.environ['ANDROID_ADB_SERVER_PORT'] = port
+    
+    subprocess.run(["adb", "tcpip", port])
     subprocess.run(["adb", "connect", f"{ip_address}:{code}"])
 
 root = tk.Tk()
@@ -55,8 +61,14 @@ code_label.grid(row=1, column=0, padx=5, pady=5)
 code_entry = tk.Entry(wireless_debug_frame)
 code_entry.grid(row=1, column=1, padx=5, pady=5)
 
+port_label = tk.Label(wireless_debug_frame, text="Puerto:")
+port_label.grid(row=2, column=0, padx=5, pady=5)
+
+port_entry = tk.Entry(wireless_debug_frame)
+port_entry.grid(row=2, column=1, padx=5, pady=5)
+
 enable_button = tk.Button(wireless_debug_frame, text="Habilitar", command=enable_wireless_debugging)
-enable_button.grid(row=2, column=0, columnspan=2, padx=5, pady=5)
+enable_button.grid(row=3, column=0, columnspan=2, padx=5, pady=5)
 
 exit_button = tk.Button(root, text="Salir", command=root.quit)
 exit_button.pack(pady=10)
