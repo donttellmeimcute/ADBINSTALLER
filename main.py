@@ -25,6 +25,14 @@ def enable_wireless_debugging():
     subprocess.run(["adb", "tcpip", port])
     subprocess.run(["adb", "connect", f"{ip_address}:{port}"])
 
+def disable_wireless_debugging():
+    subprocess.run(["adb", "usb"])  # Cambiar a USB
+    subprocess.run(["adb", "kill-server"])  # Detener el servidor ADB
+
+def on_closing():
+    disable_wireless_debugging()
+    root.destroy()
+
 root = tk.Tk()
 root.title("Instalador de APKs")
 
@@ -70,7 +78,9 @@ port_entry.grid(row=2, column=1, padx=5, pady=5)
 enable_button = tk.Button(wireless_debug_frame, text="Habilitar", command=enable_wireless_debugging)
 enable_button.grid(row=3, column=0, columnspan=2, padx=5, pady=5)
 
-exit_button = tk.Button(root, text="Salir", command=root.quit)
+exit_button = tk.Button(root, text="Salir", command=on_closing)
 exit_button.pack(pady=10)
+
+root.protocol("WM_DELETE_WINDOW", on_closing)  # Llamar a on_closing() cuando se cierre la ventana
 
 root.mainloop()
