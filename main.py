@@ -23,7 +23,7 @@ def enable_wireless_debugging():
     os.environ['ANDROID_ADB_SERVER_PORT'] = port
     
     subprocess.run(["adb", "tcpip", port])
-    subprocess.run(["adb", "connect", f"{ip_address}:{code}"])
+    subprocess.run(["adb", "connect", f"{ip_address}:{port}"])
 
 root = tk.Tk()
 root.title("Instalador de APKs")
